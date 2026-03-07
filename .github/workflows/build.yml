@@ -8,15 +8,125 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
+
       - uses: android-actions/setup-android@v3
+
+      - name: Create Project Structure
+        run: |
+          mkdir -p app/src/main/java/com/rayhana/cafe
+          mkdir -p app/src/main/assets
+          mkdir -p app/src/main/res/values
+          mkdir -p app/src/main/res/mipmap-hdpi
+
+      - name: Download HTML
+        run: |
+          curl -L "https://rayhanamaan.netlify.app" -o app/src/main/assets/index.html
+          echo "HTML size: $(wc -c < app/src/main/assets/index.html)"
+
+      - name: Create AndroidManifest
+        run: |
+          cat > app/src/main/AndroidManifest.xml << 'MANIFEST'
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <application android:label="ريحانة كافيه" android:hardwareAccelerated="true">
+              <activity android:name=".MainActivity" android:exported="true"
+                android:configChanges="orientation|screenSize"
+                android:windowSoftInputMode="adjustResize">
+                <intent-filter>
+                  <action android:name="android.intent.action.MAIN"/>
+                  <category android:name="android.intent.category.LAUNCHER"/>
+                </intent-filter>
+              </activity>
+            </application>
+          </manifest>
+          MANIFEST
+
+      - name: Create MainActivity
+        run: |
+          cat > app/src/main/java/com/rayhana/cafe/MainActivity.java << 'JAVA'
+          package com.rayhana.cafe;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.*;
+          import android.graphics.Color;
+          public class MainActivity extends Activity {
+            WebView w;
+            @Override protected void onCreate(Bundle s) {
+              super.onCreate(s);
+              w = new WebView(this);
+              w.setBackgroundColor(Color.parseColor("#1C0A05"));
+              setContentView(w);
+              WebSettings ws = w.getSettings();
+              ws.setJavaScriptEnabled(true);
+              ws.setDomStorageEnabled(true);
+              ws.setAllowFileAccessFromFileURLs(true);
+              ws.setAllowUniversalAccessFromFileURLs(true);
+              ws.setSupportZoom(false);
+              ws.setTextZoom(100);
+              w.setWebChromeClient(new WebChromeClient());
+              w.loadUrl("file:///android_asset/index.html");
+            }
+            @Override public void onBackPressed() {
+              if(w.canGoBack()) w.goBack();
+            }
+            @Override protected void onPause() {
+              super.onPause();
+              w.evaluateJavascript("if(typeof saveAll==='function')saveAll();",null);
+            }
+          }
+          JAVA
+
+      - name: Create Resources
+        run: |
+          cat > app/src/main/res/values/strings.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources><string name="app_name">ريحانة كافيه</string></resources>
+          EOF
+          cat > app/src/main/res/values/styles.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+            <style name="AppTheme" parent="android:Theme.Material.NoActionBar">
+              <item name="android:statusBarColor">#1C0A05</item>
+            </style>
+          </resources>
+          EOF
+          cp app/src/main/res/values/strings.xml app/src/main/res/mipmap-hdpi/.gitkeep || true
+
+      - name: Create app build.gradle
+        run: |
+          cat > app/build.gradle << 'EOF'
+          plugins { id 'com.android.application' }
+          android {
+            namespace 'com.rayhana.cafe'
+            compileSdk 34
+            defaultConfig {
+              applicationId "com.rayhana.cafe"
+              minSdk 24
+              targetSdk 34
+              versionCode 11
+              versionName "1.1"
+            }
+            compileOptions {
+              sourceCompatibility JavaVersion.VERSION_17
+              targetCompatibility JavaVersion.VERSION_17
+            }
+          }
+          dependencies {
+            implementation 'androidx.appcompat:appcompat:1.7.0'
+          }
+          EOF
+
       - name: Build APK
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon --stacktrace
+
       - uses: actions/upload-artifact@v4
         with:
           name: Rayhana-APK
