@@ -999,8 +999,8 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
         <div class="card-hd"><div class="card-title"><span class="ct-ico ct-b">🏦</span>قائمة التدفقات النقدية</div></div>
         <div class="card-body">
           <div class="frow">
-            <div class="fg"><label>رصيد أول المدة (JD)</label><input type="number" class="fi" id="cfOpen" value="0" step="0.001" oninput="calcCash()"></div>
-            <div class="fg"><label>رصيد الجرد الفعلي (JD)</label><input type="number" class="fi" id="cfAct" value="0" step="0.001" oninput="calcCash()"></div>
+            <div class="fg"><label>رصيد أول المدة (JD)</label><input type="number" class="fi" id="cfOpen" value="0" step="0.001" min="0" oninput="calcCash()"></div>
+            <div class="fg"><label>رصيد الجرد الفعلي (JD)</label><input type="number" class="fi" id="cfAct" value="0" step="0.001" min="0" oninput="calcCash()"></div>
           </div>
           <div class="rpt-sec">
             <div class="rpt-hd">📥 التدفقات الداخلة</div>
@@ -1108,7 +1108,7 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
             <div class="target-hd">
               <span class="target-title">🎯 هدف الإيراد الشهري</span>
               <div style="display:flex;align-items:center;gap:8px">
-                <input type="number" id="targetInput" class="fi" style="width:85px;padding:4px 8px;font-size:12px;font-family:monospace" placeholder="JD الهدف" onchange="saveTarget()">
+                <input type="number" id="targetInput" class="fi" style="width:85px;padding:4px 8px;font-size:12px;font-family:monospace" placeholder="JD الهدف" min="0" onchange="saveTarget()">
                 <span class="target-pct" id="targetPct">0%</span>
               </div>
             </div>
@@ -1232,7 +1232,7 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
     <option value="عبدالرحمن">عبدالرحمن</option>
   </select></div>
   <div class="fg"><label>البيان</label><input type="text" class="fi" id="pDesc" placeholder="نوع البضاعة أو الخدمة..."></div>
-  <div class="fg"><label>المبلغ (JD)</label><input type="number" class="fi" id="pAmt" step="0.001" placeholder="0.000"></div>
+  <div class="fg"><label>المبلغ (JD)</label><input type="number" class="fi" id="pAmt" step="0.001" min="0" placeholder="0.000"></div>
   <div class="fg"><label>رقم الفاتورة</label><input type="text" class="fi" id="pInv" placeholder="اختياري..."></div>
   <div class="btn-row"><button class="btn btn-p" style="flex:1" onclick="addPurch()">✅ تسجيل</button><button class="btn btn-ghost" style="flex:1" onclick="cmo('moPurch')">إلغاء</button></div>
 </div></div>
@@ -1252,7 +1252,7 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
   <div class="mo-title" id="oblTit">📋 إضافة التزام</div>
   <input type="hidden" id="oblEI">
   <div class="fg"><label>اسم الالتزام</label><input type="text" class="fi" id="oName" placeholder="مثال: إيجار المحل..."></div>
-  <div class="fg"><label>المبلغ الشهري (JD)</label><input type="number" class="fi" id="oAmt" step="0.001" placeholder="0.000"></div>
+  <div class="fg"><label>المبلغ الشهري (JD)</label><input type="number" class="fi" id="oAmt" step="0.001" min="0" placeholder="0.000"></div>
   <div class="fg"><label>تاريخ الاستحقاق</label><input type="date" class="fi" id="oDue"></div>
   <div class="btn-row"><button class="btn btn-p" style="flex:1" onclick="saveOblig()">✅ حفظ</button><button class="btn btn-ghost" style="flex:1" onclick="cmo('moOblig')">إلغاء</button></div>
 </div></div>
@@ -1262,7 +1262,7 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
   <div class="mo-title">💵 تسجيل سلفة</div>
   <div class="fg"><label>التاريخ</label><input type="date" class="fi" id="aDate"></div>
   <div class="fg"><label>الموظف/ة</label><select class="fs" id="aEmp"><option value="">— اختر —</option></select></div>
-  <div class="fg"><label>المبلغ (JD)</label><input type="number" class="fi" id="aAmt" step="0.001" placeholder="0.000"></div>
+  <div class="fg"><label>المبلغ (JD)</label><input type="number" class="fi" id="aAmt" step="0.001" min="0" placeholder="0.000"></div>
   <div class="fg"><label>الحالة</label><select class="fs" id="aStat"><option>مستحقة</option><option>مسددة</option><option>مسددة جزئياً</option></select></div>
   <div class="fg"><label>السبب</label><input type="text" class="fi" id="aNote" placeholder="الغرض..."></div>
   <div class="btn-row"><button class="btn btn-p" style="flex:1" onclick="addAdv()">✅ تسجيل</button><button class="btn btn-ghost" style="flex:1" onclick="cmo('moAdv')">إلغاء</button></div>
@@ -1953,7 +1953,7 @@ function totals(){
   let mSalG=0;S.monthlyEmps.forEach(e=>{const s=d.mSal[e.id]||{};mSalG+=(s.base||0)+(s.allow||0);});
   let dwTotal=0;S.dailyEmps.forEach(e=>{const w=d.dWages[e.id]||{};dwTotal+=(w.rate||0)*(w.att||[]).length;});
   const grossP=rev-bycat.COGS;
-  const totalExp=bycat.total+oblTotal+mSalG+dwTotal;
+  const totalExp=bycat.total+oblPaid+mSalG+dwTotal;
   const profit=rev-totalExp,margin=rev>0?profit/rev*100:0;
   let advP=0;d.advances.filter(a=>a.status==="مستحقة"||a.status==="مسددة جزئياً").forEach(a=>advP+=a.amt||0);
   return{cash,visa,pmts,netSales,rev,bycat,oblTotal,oblPaid,mSalG,dwTotal,grossP,totalExp,profit,margin,advP,obls:d.obligations};
@@ -2258,7 +2258,7 @@ function delOblig(i){if(CR!=="manager"){toast("⚠️ صلاحية المدير"
 /* SALARIES */
 function initSalTables(){
   const d=G(),mb=$("mSalBody");
-  if(mb){mb.innerHTML="";S.monthlyEmps.forEach(e=>{const sal=d.mSal[e.id]||{base:0,allow:0,ded:0};const tr=document.createElement("tr");tr.innerHTML=`<td style="font-weight:700">${e.name}</td><td><input class="inp" type="number" step="0.001" id="ms_${e.id}_b" value="${sal.base||""}" placeholder="0" onchange="calcSal()"></td><td><input class="inp" type="number" step="0.001" id="ms_${e.id}_a" value="${sal.allow||""}" placeholder="0" onchange="calcSal()"></td><td class="td-y num" id="ms_${e.id}_g">${n3((sal.base||0)+(sal.allow||0))}</td><td><input class="inp" type="number" step="0.001" id="ms_${e.id}_d" value="${sal.ded||""}" placeholder="0" onchange="calcSal()"></td><td class="td-r num" id="ms_${e.id}_av">${n3(pendAdv(e.id))}</td><td class="td-g num" id="ms_${e.id}_n">${n3((sal.base||0)+(sal.allow||0)-(sal.ded||0)-pendAdv(e.id))}</td>`;mb.appendChild(tr);});}
+  if(mb){mb.innerHTML="";S.monthlyEmps.forEach(e=>{const sal=d.mSal[e.id]||{base:0,allow:0,ded:0};const tr=document.createElement("tr");tr.innerHTML=`<td style="font-weight:700">${e.name}</td><td><input class="inp" type="number" step="0.001" min="0" id="ms_${e.id}_b" value="${sal.base||""}" placeholder="0" onchange="calcSal()"></td><td><input class="inp" type="number" step="0.001" min="0" id="ms_${e.id}_a" value="${sal.allow||""}" placeholder="0" onchange="calcSal()"></td><td class="td-y num" id="ms_${e.id}_g">${n3((sal.base||0)+(sal.allow||0))}</td><td><input class="inp" type="number" step="0.001" min="0" id="ms_${e.id}_d" value="${sal.ded||""}" placeholder="0" onchange="calcSal()"></td><td class="td-r num" id="ms_${e.id}_av">${n3(pendAdv(e.id))}</td><td class="td-g num" id="ms_${e.id}_n">${n3((sal.base||0)+(sal.allow||0)-(sal.ded||0)-pendAdv(e.id))}</td>`;mb.appendChild(tr);});}
   buildAttGrid();calcSal();
 }
 const pendAdv=empId=>G().advances.filter(a=>a.empId===empId&&(a.status==="مستحقة"||a.status==="مسددة جزئياً")).reduce((s,a)=>s+(a.amt||0),0);
@@ -2268,7 +2268,7 @@ function buildAttGrid(){
   S.dailyEmps.forEach(e=>{
     const w=d.dWages[e.id]||{rate:0,att:[]},present=w.att||[];
     const div=document.createElement("div");div.className="att-card";
-    div.innerHTML=`<div class="att-hdr"><div class="att-name">👷 ${e.name}</div><span class="att-sum-badge" id="att_s_${e.id}">${present.length} يوم</span></div><div class="att-rate-row"><label>الأجر اليومي (JD):</label><input class="att-ri" type="number" step="0.001" id="att_r_${e.id}" value="${w.rate||""}" placeholder="0" onchange="calcSal()"></div><div class="att-days" id="att_g_${e.id}">${Array.from({length:days},(_,i)=>{const day=i+1,on=present.includes(day);return`<div class="att-d ${on?"here":""}" id="attd_${e.id}_${day}" onclick="toggleAtt('${e.id}',${day})">${day}</div>`;}).join("")}</div><div class="att-foot"><span style="font-size:12px;font-weight:600;color:var(--ywd)">إجمالي أجر ${e.name}</span><span style="font-size:15px;font-weight:700;font-family:'IBM Plex Mono'" id="att_t_${e.id}">${n3((w.rate||0)*present.length)} JD</span></div>`;
+    div.innerHTML=`<div class="att-hdr"><div class="att-name">👷 ${e.name}</div><span class="att-sum-badge" id="att_s_${e.id}">${present.length} يوم</span></div><div class="att-rate-row"><label>الأجر اليومي (JD):</label><input class="att-ri" type="number" step="0.001" min="0" id="att_r_${e.id}" value="${w.rate||""}" placeholder="0" onchange="calcSal()"></div><div class="att-days" id="att_g_${e.id}">${Array.from({length:days},(_,i)=>{const day=i+1,on=present.includes(day);return`<div class="att-d ${on?"here":""}" id="attd_${e.id}_${day}" onclick="toggleAtt('${e.id}',${day})">${day}</div>`;}).join("")}</div><div class="att-foot"><span style="font-size:12px;font-weight:600;color:var(--ywd)">إجمالي أجر ${e.name}</span><span style="font-size:15px;font-weight:700;font-family:'IBM Plex Mono'" id="att_t_${e.id}">${n3((w.rate||0)*present.length)} JD</span></div>`;
     c.appendChild(div);
   });
 }
@@ -2573,7 +2573,7 @@ function connectCloud() {
   fetch(url + '?action=ping', {method:'GET'})
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      if (data.ok !== undefined) {
+      if (data.ok === true) {
         safeLS.setItem(SYNC_URL_KEY, url);
         updateSyncUI();
         toast('✅ تم الاتصال بـ Google Sheets بنجاح!');
@@ -2581,14 +2581,15 @@ function connectCloud() {
         // Auto push current data
         cloudSync('push');
       } else {
-        throw new Error('invalid response');
+        throw new Error(data.error || 'استجابة غير صحيحة من السيرفر');
       }
     })
     .catch(function(e) {
       // If CORS error, still save the URL (Apps Script may block GET from file://)
       safeLS.setItem(SYNC_URL_KEY, url);
       updateSyncUI();
-      toast('✅ تم حفظ الرابط — جاري الرفع...');
+      toast('⚠️ تم حفظ الرابط — تعذّر التحقق (CORS)، جاري محاولة الرفع...');
+      showSyncBar('loading', '⚠️ جاري الرفع بدون تحقق...');
       cloudSync('push');
     });
 }
@@ -2649,10 +2650,11 @@ async function cloudSync(direction) {
         updateSyncUI();
         hideSyncBar(3000);
       } else {
-        throw new Error(data.error || 'push failed');
+        throw new Error(data.error || 'فشل الرفع إلى السحابة');
       }
     } catch(e) {
       showSyncBar('err', '❌ فشل الحفظ: ' + e.message);
+      toast('❌ فشل الحفظ السحابي: ' + e.message);
       hideSyncBar(4000);
     }
 
@@ -2683,10 +2685,11 @@ async function cloudSync(direction) {
         showSyncBar('err', '⚠️ لا توجد بيانات في السحابة بعد — ارفع أولاً');
         hideSyncBar(4000);
       } else {
-        throw new Error(data.error || 'pull failed');
+        throw new Error(data.error || 'فشل التحميل من السحابة');
       }
     } catch(e) {
       showSyncBar('err', '❌ فشل التحميل: ' + e.message);
+      toast('❌ فشل التحميل السحابي: ' + e.message);
       hideSyncBar(4000);
     }
   }
@@ -2976,10 +2979,10 @@ function renderBreakEven() {
   var active = d.sales.filter(function(s) { return (s.cash||0)+(s.visa||0)+(s.pmts||0) > 0; });
   var avg = active.length ? t.rev / active.length : 0;
 
-  // Fixed costs = obligations + monthly salaries
-  var fixedMonthly = d.obligations.reduce(function(s,o) { return s+(o.amt||0); }, 0) + (t.mSalG||0);
-  // Variable costs per JD revenue = COGS% + daily wages
-  var varRate = t.rev > 0 ? (t.bycat.COGS + t.bycat.OPS) / t.rev : 0.35;
+  // Fixed costs = obligations + monthly salaries + operational expenses (OPS)
+  var fixedMonthly = d.obligations.reduce(function(s,o) { return s+(o.amt||0); }, 0) + (t.mSalG||0) + (t.bycat.OPS||0);
+  // Variable costs per JD revenue = COGS only (direct cost of goods sold)
+  var varRate = t.rev > 0 ? t.bycat.COGS / t.rev : 0.35;
   // Daily break-even = fixed/days / (1 - varRate)
   var dailyFixed = fixedMonthly / days;
   var dailyBE = (1 - varRate) > 0 ? dailyFixed / (1 - varRate) : 0;
