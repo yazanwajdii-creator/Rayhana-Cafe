@@ -9,6 +9,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="ريحانة كافيه">
 <title>ريحانة كافيه</title>
+<link rel="manifest" id="pwaManifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -17,7 +22,7 @@
 :root{
   --esp:#1C0A05;--drk:#0F0604;--cof:#3D1A0A;--cap:#7A4A2A;
   --sap:#0070F2;--sap-d:#0057C2;--sap-l:#E8F3FF;
-  --bg:#F4F6F9;--surf:#FFFFFF;--surf2:#F8FAFC;
+  --bg:#F4F6F9;--surf:#FFFFFF;--surf2:#F8FAFC;--surf3:#F1F5F9;
   --br:#E2E8F0;--br2:#CBD5E1;
   --tx:#1E293B;--tx2:#475569;--tx3:#94A3B8;--tx4:#CBD5E1;
   --gn:#10B981;--gnd:#065F46;--gnl:#ECFDF5;--gnb:#D1FAE5;
@@ -303,7 +308,7 @@ body.dark .date-filter-bar{background:var(--surf2);border-color:var(--br)}
 
 /* DARK MODE */
 body.dark{
-  --bg:#0D1117;--surf:#161B22;--surf2:#1C2128;--br:#30363D;--br2:#484F58;
+  --bg:#0D1117;--surf:#161B22;--surf2:#1C2128;--surf3:#21262D;--br:#30363D;--br2:#484F58;
   --tx:#E6EDF3;--tx2:#C9D1D9;--tx3:#8B949E;--tx4:#484F58;
   --sap-l:rgba(0,112,242,.15);
   --bll:rgba(59,130,246,.15);--gnl:rgba(16,185,129,.15);--ywl:rgba(245,158,11,.15);--rdl:rgba(239,68,68,.15);
@@ -504,17 +509,10 @@ body.dark .df-inp,body.dark .df-inp-d{background:var(--surf2);border-color:var(-
 @media print{.topbar,.nav-tabs,.fab,.btn-row,.btn{display:none!important}.card{box-shadow:none!important;border:1px solid #ddd!important}body{background:#fff!important}}
 .who-sel{padding:3px 8px;border:1.5px solid var(--br);border-radius:5px;font-size:11px;font-weight:600;color:var(--tx);background:var(--surf);min-width:80px;cursor:pointer}
 .who-yz{border-color:#0070F2!important;color:#0070F2!important}
-.who-ab{border-color:#B8860B!important;color:#B8860B!important}
+.who-ab{border-color:#92400E!important;color:#92400E!important}
 body.dark .who-sel{background:var(--surf2);color:var(--tx);border-color:var(--br)}
 body.dark .who-yz{border-color:#60A5FA!important;color:#60A5FA!important}
 body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
-</style>
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="ريحانة كافيه">
-<meta name="theme-color" content="#1C0A05">
-<link rel="manifest" id="pwaManifest">
-<style>
 /* QUICK ENTRY CARD */
 .qentry-card{background:linear-gradient(135deg,#1C0A05,#2E1209);border:1px solid rgba(200,146,15,.3);border-radius:16px;padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
 .qentry-card::before{content:'';position:absolute;top:-20px;left:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(200,146,15,.15),transparent);border-radius:50%}
@@ -569,14 +567,16 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
       <div style="color:rgba(255,255,255,.5);font-size:12px;text-align:center;margin-bottom:16px">تسجيل الدخول</div>
       <div style="position:relative;margin-bottom:12px">
         <input type="password" id="pwdInput" placeholder="كلمة المرور" maxlength="30"
+          autocomplete="current-password"
+          aria-label="كلمة المرور"
           style="width:100%;padding:13px 16px;border-radius:12px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:15px;font-family:'IBM Plex Sans Arabic',sans-serif;outline:none;text-align:center;letter-spacing:3px"
-          onkeydown="if(event.key==='Enter')checkPwd()"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();checkPwd();}"
           oninput="document.getElementById('pwd-err').textContent=''"
           onfocus="this.style.borderColor='rgba(200,146,15,.6)'"
           onblur="this.style.borderColor='rgba(255,255,255,.15)'">
       </div>
-      <button onclick="checkPwd()" style="width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,#C8920F,#F0B429);color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:'IBM Plex Sans Arabic',sans-serif;letter-spacing:.5px">
-        دخول ←
+      <button onclick="checkPwd()" aria-label="دخول" style="width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,#C8920F,#F0B429);color:#1C0A05;font-size:14px;font-weight:700;cursor:pointer;font-family:'IBM Plex Sans Arabic',sans-serif;letter-spacing:.5px">
+        → دخول
       </button>
       <div id="pwd-err" style="color:#FCA5A5;font-size:12px;margin-top:10px;min-height:18px;text-align:center"></div>
     </div>
@@ -588,7 +588,7 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
   <div id="lkbanner" class="lockbanner">⏰ سيتم قفل التطبيق قريباً</div>
 
   <div class="topbar" style="position:relative">
-    <div class="tb-logo" onclick="pg('dash',document.querySelector('.ntab'))" style="cursor:pointer"><div class="tb-ico">☕</div><div class="tb-name" style="display:none;display:block">ريحانة</div></div>
+    <div class="tb-logo" onclick="pg('dash',document.querySelector('.ntab'))" style="cursor:pointer"><div class="tb-ico">☕</div><div class="tb-name">ريحانة</div></div>
     <div class="tb-sep"></div>
     <div class="tb-mid">
       <div class="gsearch">
@@ -598,8 +598,8 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
     </div>
     <div class="tb-right">
       <select class="msel" id="monthSel" onchange="switchMonth(this.value)"></select>
-      <button class="tbtn" onclick="toggleDark()" title="الوضع الليلي" id="darkBtn">🌙</button>
-      <div class="uchip" onclick="lockApp()" title="قفل التطبيق" style="padding:3px 8px;gap:4px"><div class="udot"></div><span id="uname" style="max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">مدير</span></div>
+      <button class="tbtn" onclick="toggleDark()" title="الوضع الليلي" aria-label="تبديل الوضع الليلي" id="darkBtn">🌙</button>
+      <button class="uchip" onclick="lockApp()" title="قفل التطبيق" aria-label="قفل التطبيق" style="padding:3px 8px;gap:4px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:6px;cursor:pointer"><div class="udot"></div><span id="uname" style="max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:rgba(255,255,255,.8);font-size:12px">مدير</span></button>
     </div>
     <div class="sres" id="sres"></div>
   </div>
@@ -696,10 +696,11 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
           </div>
         </div>
         <div class="card-body" style="padding:12px">
+          <!-- CONNECTED VIEW -->
           <div id="syncConnectedView" style="display:none">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
               <div>
-                <div style="font-size:12px;font-weight:700;color:var(--gn)">✅ متصل بـ Google Sheets</div>
+                <div style="font-size:12px;font-weight:700;color:var(--gn)" id="syncProviderLabel">✅ متصل</div>
                 <div style="font-size:10px;color:var(--tx3);margin-top:2px" id="syncLastSaved">—</div>
               </div>
               <div style="display:flex;gap:6px">
@@ -712,19 +713,55 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
               <button class="btn btn-r btn-sm" onclick="disconnectCloud()" style="font-size:11px">قطع الاتصال</button>
             </div>
           </div>
+
+          <!-- SETUP VIEW -->
           <div id="syncSetupView">
-            <div class="sync-setup-card">
-              <div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:10px">🔒 بياناتك محمية — تُحفظ في Google Sheet الخاص بك أنت فقط</div>
-              <div class="sync-step"><div class="sync-step-num">1</div><div>افتح <strong>Google Sheets</strong> وأنشئ جدولاً جديداً باسم "ريحانة كافيه"</div></div>
-              <div class="sync-step"><div class="sync-step-num">2</div><div>من القائمة: <strong>Extensions → Apps Script</strong></div></div>
-              <div class="sync-step"><div class="sync-step-num">3</div><div>احذف الكود الموجود والصق الكود الذي ستجده بالضغط على الزر أدناه</div></div>
-              <div class="sync-step"><div class="sync-step-num">4</div><div><strong>Deploy → New deployment → Web app</strong> → Execute as Me → Who has access: Anyone → Deploy</div></div>
-              <div class="sync-step"><div class="sync-step-num">5</div><div>انسخ رابط الـ Web App وألصقه هنا:</div></div>
-              <button class="btn btn-ghost btn-sm" onclick="copyAppsScript()" style="width:100%;margin-bottom:10px;font-size:11px">📋 نسخ كود Apps Script</button>
-              <div class="fg" style="margin:0">
-                <input type="url" class="fi" id="syncUrlInput" placeholder="https://script.google.com/macros/s/..." style="font-size:11px" dir="ltr">
+            <!-- Provider tabs -->
+            <div style="display:flex;gap:6px;margin-bottom:12px">
+              <button id="tabJB" class="btn btn-sm btn-p" onclick="showSyncProvider('jsonbin')">🔑 JSONBin.io — مُوصى</button>
+              <button id="tabGS" class="btn btn-sm btn-ghost" onclick="showSyncProvider('gsheets')">📊 Google Sheets</button>
+            </div>
+
+            <!-- JSONBin.io (default) -->
+            <div id="syncJBView">
+              <div class="sync-setup-card">
+                <div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:10px">🔒 بياناتك خاصة — تُحفظ في حسابك على JSONBin.io مجاناً</div>
+                <div class="sync-step">
+                  <div class="sync-step-num">1</div>
+                  <div>اذهب إلى <strong>jsonbin.io</strong> → أنشئ حساباً مجانياً (بريدك الإلكتروني فقط)</div>
+                </div>
+                <div class="sync-step">
+                  <div class="sync-step-num">2</div>
+                  <div>من لوحة التحكم: اضغط على <strong>API Keys</strong> → <strong>Master Key</strong> → انسخه والصقه هنا:</div>
+                </div>
+                <div class="fg" style="margin:8px 0 0">
+                  <input type="text" class="fi" id="jbKeyInput" placeholder="$2a$10$..." dir="ltr" autocomplete="off"
+                    style="font-size:12px;font-family:'IBM Plex Mono',monospace;letter-spacing:.5px">
+                </div>
+                <button class="btn btn-p" onclick="connectJsonBin()" style="width:100%;margin-top:8px;font-size:13px">
+                  🔗 ربط JSONBin.io — مجاناً
+                </button>
+                <div style="font-size:10px;color:var(--tx3);margin-top:8px;text-align:center">
+                  مجاني لأكثر من 10,000 عملية/شهر · بياناتك خاصة بك فقط
+                </div>
               </div>
-              <button class="btn btn-p" onclick="connectCloud()" style="width:100%;margin-top:8px;font-size:12px">🔗 ربط Google Sheets</button>
+            </div>
+
+            <!-- Google Sheets (hidden) -->
+            <div id="syncGSView" style="display:none">
+              <div class="sync-setup-card">
+                <div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:10px">🔒 بياناتك تُحفظ في Google Sheet الخاص بك</div>
+                <div class="sync-step"><div class="sync-step-num">1</div><div>افتح <strong>Google Sheets</strong> وأنشئ جدولاً جديداً</div></div>
+                <div class="sync-step"><div class="sync-step-num">2</div><div>من القائمة: <strong>Extensions → Apps Script</strong></div></div>
+                <div class="sync-step"><div class="sync-step-num">3</div><div>احذف الكود الموجود والصق الكود بالضغط على الزر أدناه</div></div>
+                <div class="sync-step"><div class="sync-step-num">4</div><div><strong>Deploy → New deployment → Web app</strong> → Execute as Me → Anyone → Deploy</div></div>
+                <div class="sync-step"><div class="sync-step-num">5</div><div>انسخ رابط الـ Web App وألصقه هنا:</div></div>
+                <button class="btn btn-ghost btn-sm" onclick="copyAppsScript()" style="width:100%;margin-bottom:10px;font-size:11px">📋 نسخ كود Apps Script</button>
+                <div class="fg" style="margin:0">
+                  <input type="url" class="fi" id="syncUrlInput" placeholder="https://script.google.com/macros/s/..." style="font-size:11px" dir="ltr">
+                </div>
+                <button class="btn btn-p" onclick="connectCloud()" style="width:100%;margin-top:8px;font-size:12px">🔗 ربط Google Sheets</button>
+              </div>
             </div>
           </div>
         </div>
@@ -740,9 +777,9 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
               <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--br)"><span style="color:var(--tx3)">مشتريات أجراها</span><span id="mgr-yz-p" class="num" style="color:var(--rd);font-weight:700">0.000 JD</span></div>
               <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0"><b>صافي بيده</b><span id="mgr-yz-n" class="num" style="font-weight:700">0.000 JD</span></div>
             </div>
-            <div style="padding:12px;border-radius:9px;border:2px solid #B8860B;background:var(--surf2)">
-              <div style="font-size:13px;font-weight:700;color:#B8860B;margin-bottom:9px">عبدالرحمن</div>
-              <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--br)"><span style="color:var(--tx3)">نقدي استلمه</span><span id="mgr-ab-r" class="num" style="color:#B8860B;font-weight:700">0.000 JD</span></div>
+            <div style="padding:12px;border-radius:9px;border:2px solid #92400E;background:var(--surf2)">
+              <div style="font-size:13px;font-weight:700;color:#92400E;margin-bottom:9px">عبدالرحمن</div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--br)"><span style="color:var(--tx3)">نقدي استلمه</span><span id="mgr-ab-r" class="num" style="color:#92400E;font-weight:700">0.000 JD</span></div>
               <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--br)"><span style="color:var(--tx3)">مشتريات أجراها</span><span id="mgr-ab-p" class="num" style="color:var(--rd);font-weight:700">0.000 JD</span></div>
               <div style="display:flex;justify-content:space-between;font-size:13px;padding:7px 0"><b>صافي بيده</b><span id="mgr-ab-n" class="num" style="font-weight:700">0.000 JD</span></div>
             </div>
@@ -753,8 +790,8 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
             <div style="flex:1;height:7px;background:var(--br);border-radius:4px;overflow:hidden"><div id="b-yz-r" style="height:100%;background:#0070F2;border-radius:4px;width:0%;transition:width .4s"></div></div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-            <span style="font-size:11px;font-weight:600;color:#B8860B;width:90px">عبدالرحمن</span>
-            <div style="flex:1;height:7px;background:var(--br);border-radius:4px;overflow:hidden"><div id="b-ab-r" style="height:100%;background:#B8860B;border-radius:4px;width:0%;transition:width .4s"></div></div>
+            <span style="font-size:11px;font-weight:600;color:#92400E;width:90px">عبدالرحمن</span>
+            <div style="flex:1;height:7px;background:var(--br);border-radius:4px;overflow:hidden"><div id="b-ab-r" style="height:100%;background:#92400E;border-radius:4px;width:0%;transition:width .4s"></div></div>
           </div>
           <div style="font-size:11px;color:var(--tx3);font-weight:600;margin-bottom:6px">توزيع المشتريات</div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
@@ -762,8 +799,8 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
             <div style="flex:1;height:7px;background:var(--br);border-radius:4px;overflow:hidden"><div id="b-yz-p" style="height:100%;background:#0070F2;border-radius:4px;width:0%;transition:width .4s"></div></div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
-            <span style="font-size:11px;font-weight:600;color:#B8860B;width:90px">عبدالرحمن</span>
-            <div style="flex:1;height:7px;background:var(--br);border-radius:4px;overflow:hidden"><div id="b-ab-p" style="height:100%;background:#B8860B;border-radius:4px;width:0%;transition:width .4s"></div></div>
+            <span style="font-size:11px;font-weight:600;color:#92400E;width:90px">عبدالرحمن</span>
+            <div style="flex:1;height:7px;background:var(--br);border-radius:4px;overflow:hidden"><div id="b-ab-p" style="height:100%;background:#92400E;border-radius:4px;width:0%;transition:width .4s"></div></div>
           </div>
           <div style="padding:9px;background:var(--surf3);border-radius:7px;border:1px solid var(--br);font-size:12px">
             <b style="font-size:11px;color:var(--tx3)">غير موزّع</b>
@@ -783,15 +820,15 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
           <div id="lk-rev" style="text-align:center;margin-bottom:8px"></div>
           <!-- Navigation: 3 equal columns -->
           <div style="display:grid;grid-template-columns:1fr 2fr 1fr;gap:6px;align-items:center">
-            <!-- Prev button - large tap area -->
-            <div id="btnPrev" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;height:60px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;font-size:28px;color:#fff;font-weight:300;-webkit-tap-highlight-color:rgba(200,146,15,.3)" onclick="qePrev()">&#8249;</div>
+            <!-- Prev button — right side in RTL = go to earlier day -->
+            <button id="btnPrev" aria-label="اليوم السابق" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;height:60px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;font-size:28px;color:#fff;font-weight:300;-webkit-tap-highlight-color:rgba(200,146,15,.3);width:100%" onclick="qePrev()">&#8250;</button>
             <!-- Date center -->
             <div style="text-align:center">
               <div class="qe-date" id="qeTitle" style="font-size:22px;line-height:1.2">—</div>
               <div class="qe-sub" id="qeSub" style="font-size:10px;margin:0;opacity:.7">إدخال إيراد اليوم</div>
             </div>
-            <!-- Next button - large tap area -->
-            <div id="btnNext" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;height:60px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;font-size:28px;color:#fff;font-weight:300;-webkit-tap-highlight-color:rgba(200,146,15,.3)" onclick="qeNext()">&#8250;</div>
+            <!-- Next button — left side in RTL = go to later day -->
+            <button id="btnNext" aria-label="اليوم التالي" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;height:60px;display:flex;align-items:center;justify-content:center;cursor:pointer;user-select:none;font-size:28px;color:#fff;font-weight:300;-webkit-tap-highlight-color:rgba(200,146,15,.3);width:100%" onclick="qeNext()">&#8249;</button>
           </div>
         </div>
         <div class="qe-row">
@@ -2162,7 +2199,7 @@ function renderPurch(){
       "<td class='"+cls+" num'>"+n3(r.amt)+"</td>"+
       "<td><span class='who-sel "+bCls+"' style='cursor:default'>"+(r.buyer||"—")+"</span></td>"+
       "<td style='font-size:11px;color:var(--tx3)'>"+(r.inv||"—")+"</td>"+
-      "<td><button class='btn btn-r btn-xs del-btn' onclick='delPurch("+i+")'>×</button></td>";
+      "<td><button class='btn btn-r btn-xs del-btn' onclick='delPurch("+i+")' aria-label='حذف المستند'>×</button></td>";
     b.appendChild(tr);
   });
   if(!shown){b.innerHTML='<tr><td colspan="7" style="padding:22px;color:var(--tx4)">لا توجد نتائج للفترة المحددة</td></tr>';}
@@ -2199,7 +2236,7 @@ function renderCatSum(){
 
 /* SUPPLIERS */
 const SICO={"مواد غذائية ومواد خام":"🥗","مشروبات ومواد القهوة":"☕","مواد التعبئة والتغليف":"📦","مواد النظافة والتعقيم":"🧹","مستلزمات التشغيل":"⚙️","خدمات وصيانة":"🔧","أخرى":"📋"};
-function renderSuppList(){const c=$("suppList");if(!c)return;if(!S.suppliers.length){c.innerHTML='<div class="alert al-i">لا يوجد موردون</div>';return;}c.innerHTML=S.suppliers.map((s,i)=>`<div class="sup-card"><div class="sup-ico">${SICO[s.cat]||"📦"}</div><div class="sup-info"><div class="sup-name">${s.name}</div><div class="sup-cat">${s.cat}${s.note?" — "+s.note:""}</div></div><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs" onclick="editSupp(${i})">✏️</button><button class="btn btn-r btn-xs del-btn" onclick="delSupp(${i})">🗑️</button></div></div>`).join("");applyRoles();}
+function renderSuppList(){const c=$("suppList");if(!c)return;if(!S.suppliers.length){c.innerHTML='<div class="alert al-i">لا يوجد موردون</div>';return;}c.innerHTML=S.suppliers.map((s,i)=>`<div class="sup-card"><div class="sup-ico">${SICO[s.cat]||"📦"}</div><div class="sup-info"><div class="sup-name">${s.name}</div><div class="sup-cat">${s.cat}${s.note?" — "+s.note:""}</div></div><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs" onclick="editSupp(${i})" aria-label="تعديل المورد">✏️</button><button class="btn btn-r btn-xs del-btn" onclick="delSupp(${i})" aria-label="حذف المورد">🗑️</button></div></div>`).join("");applyRoles();}
 function editSupp(i){const s=S.suppliers[i];$("suppTit").textContent="✏️ تعديل المورد";$("suppEI").value=i;$("sName").value=s.name;$("sCat").value=s.cat;$("sNote").value=s.note||"";openMo("moSupp");}
 function saveSupp(){const n=$("sName").value.trim(),c=$("sCat").value,nt=$("sNote").value.trim();if(!n){toast("⚠️ أدخل اسم المورد");return;}const ei=$("suppEI").value;if(ei!==""){S.suppliers[parseInt(ei)]={...S.suppliers[parseInt(ei)],name:n,cat:c,note:nt};}else{S.suppliers.push({id:"s"+Date.now(),name:n,cat:c,note:nt});}buildPurchSupp();renderSuppList();renderSuppRpt();cmo("moSupp");$("suppEI").value="";$("suppTit").textContent="📦 إضافة مورد";["sName","sNote"].forEach(id=>$(id).value="");saveAll();toast("✅ تم الحفظ");}
 function delSupp(i){if(CR!=="manager"){toast("⚠️ صلاحية المدير");return;}if(!confirm(`حذف "${S.suppliers[i].name}"؟`))return;S.suppliers.splice(i,1);buildPurchSupp();renderSuppList();renderSuppRpt();saveAll();toast("🗑️ تم الحذف");}
@@ -2221,8 +2258,8 @@ function renderObligList(){
   c.innerHTML=G().obligations.map((o,i)=>`<div class="obl-row ${o.paid?"paid":""}">
     <div class="obl-info"><div class="obl-name">${o.name}</div><div class="obl-meta"><span class="num">${n3(o.amt)}</span> JD${o.due?" | "+o.due:""}</div></div>
     <span class="badge ${o.paid?"bg-ok":"bg-e"}">${o.paid?"✅ مدفوع":"❌ غير مدفوع"}</span>
-    <button class="obl-toggle ${o.paid?"ps":""}" onclick="toggleOblig(${i})" ${locked?"disabled":""} title="${locked?"الشهر مغلق":""}">${o.paid?"✅":"❌"}</button>
-    <div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs" onclick="editOblig(${i})">✏️</button><button class="btn btn-r btn-xs del-btn" onclick="delOblig(${i})">🗑️</button></div>
+    <button class="obl-toggle ${o.paid?"ps":""}" onclick="toggleOblig(${i})" ${locked?"disabled":""} aria-label="${o.paid?"تحديد كغير مدفوع":"تحديد كمدفوع"}" title="${locked?"الشهر مغلق":""}">${o.paid?"✅":"❌"}</button>
+    <div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs" onclick="editOblig(${i})" aria-label="تعديل الالتزام">✏️</button><button class="btn btn-r btn-xs del-btn" onclick="delOblig(${i})" aria-label="حذف الالتزام">🗑️</button></div>
   </div>`).join("");
   const obls=G().obligations;
   const total=obls.reduce((s,o)=>s+(o.amt||0),0);
@@ -2317,7 +2354,7 @@ function renderAdv(){
     if(a.status==="مستحقة"||a.status==="مسددة جزئياً")tot+=a.amt;
     const sc=a.status==="مسددة"?"bg-ok":a.status==="مسددة جزئياً"?"bg-w":"bg-e";
     const tr=document.createElement("tr");
-    tr.innerHTML=`<td class="num" style="font-size:11.5px">${a.date}</td><td style="font-weight:600">${a.empName}</td><td class="td-y num">${n3(a.amt)}</td><td><span class="badge ${sc}">${a.status}</span></td><td style="font-size:11px;color:var(--tx3)">${a.note||"—"}</td><td><select class="inp" style="font-size:11px;padding:4px" onchange="updAdvStat(${i},this.value)"><option ${a.status==="مستحقة"?"selected":""}>مستحقة</option><option ${a.status==="مسددة"?"selected":""}>مسددة</option><option ${a.status==="مسددة جزئياً"?"selected":""}>مسددة جزئياً</option></select><button class="btn btn-r btn-xs del-btn" onclick="delAdv(${i})" style="margin-top:3px;display:block">🗑️</button></td>`;
+    tr.innerHTML=`<td class="num" style="font-size:11.5px">${a.date}</td><td style="font-weight:600">${a.empName}</td><td class="td-y num">${n3(a.amt)}</td><td><span class="badge ${sc}">${a.status}</span></td><td style="font-size:11px;color:var(--tx3)">${a.note||"—"}</td><td><select class="inp" style="font-size:11px;padding:4px" onchange="updAdvStat(${i},this.value)"><option ${a.status==="مستحقة"?"selected":""}>مستحقة</option><option ${a.status==="مسددة"?"selected":""}>مسددة</option><option ${a.status==="مسددة جزئياً"?"selected":""}>مسددة جزئياً</option></select><button class="btn btn-r btn-xs del-btn" onclick="delAdv(${i})" aria-label="حذف السلفة" style="margin-top:3px;display:block">🗑️</button></td>`;
     b.appendChild(tr);
   });T("t-adv",n3(tot));
 }
@@ -2501,8 +2538,137 @@ function importJSON(e){const file=e.target.files[0];if(!file)return;const reader
 // ════════════════════════════════════════════════════════════════
 var SYNC_URL_KEY = 'rh_sync_url';
 var SYNC_AUTO_KEY = 'rh_sync_auto';
+var SYNC_TYPE_KEY = 'rh_sync_type';   // 'gsheets' | 'jsonbin'
+var JSONBIN_KEY_STORAGE = 'rh_jb_key';
+var JSONBIN_ID_STORAGE  = 'rh_jb_id';
 var _syncTimer = null;
 var _autoSync = false;
+
+function isCloudConnected() {
+  var type = safeLS.getItem(SYNC_TYPE_KEY);
+  if (type === 'jsonbin') return !!safeLS.getItem(JSONBIN_KEY_STORAGE);
+  return !!safeLS.getItem(SYNC_URL_KEY);
+}
+
+function buildSyncPayload() {
+  return {
+    months: S.months, suppliers: S.suppliers, activeKey: S.activeKey,
+    lockedMonths: S.lockedMonths || [], dailyEmps: S.dailyEmps,
+    monthlyEmps: S.monthlyEmps, targets: S.targets || {},
+    inventory: S.inventory || [], savedAt: new Date().toISOString(),
+    device: navigator.userAgent.substring(0, 50)
+  };
+}
+
+function applySyncPayload(sv) {
+  if (sv.months) Object.keys(sv.months).forEach(function(k) { S.months[k] = sv.months[k]; });
+  if (sv.suppliers && sv.suppliers.length) S.suppliers = sv.suppliers;
+  if (sv.activeKey) S.activeKey = sv.activeKey;
+  if (sv.lockedMonths) S.lockedMonths = sv.lockedMonths;
+  if (sv.dailyEmps && sv.dailyEmps.length) S.dailyEmps = sv.dailyEmps;
+  if (sv.monthlyEmps && sv.monthlyEmps.length) S.monthlyEmps = sv.monthlyEmps;
+  if (sv.targets) S.targets = sv.targets;
+  if (sv.inventory) S.inventory = sv.inventory;
+  saveAll(); renderAll(); syncAttFromAllNotes();
+}
+
+// ── JSONBin.io connect ──────────────────────────────────────────
+async function connectJsonBin() {
+  var apiKey = (document.getElementById('jbKeyInput') || {}).value.trim();
+  if (!apiKey) { toast('❌ أدخل مفتاح API'); return; }
+  showSyncBar('loading', '🔗 جاري التحقق من المفتاح...');
+  try {
+    var res = await fetch('https://api.jsonbin.io/v3/b', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': apiKey,
+        'X-Bin-Name': 'rayhana-cafe',
+        'X-Bin-Private': 'true'
+      },
+      body: JSON.stringify({_init: true, savedAt: new Date().toISOString()})
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'مفتاح غير صحيح');
+    safeLS.setItem(JSONBIN_KEY_STORAGE, apiKey);
+    safeLS.setItem(SYNC_TYPE_KEY, 'jsonbin');
+    if (data.metadata && data.metadata.id) safeLS.setItem(JSONBIN_ID_STORAGE, data.metadata.id);
+    updateSyncUI();
+    showSyncBar('ok', '✅ تم الربط بـ JSONBin.io');
+    hideSyncBar(3000);
+    toast('✅ تم ربط JSONBin.io — جاري رفع البيانات...');
+    cloudSync('push');
+  } catch(e) {
+    showSyncBar('err', '❌ فشل الاتصال: ' + e.message);
+    hideSyncBar(4000);
+    toast('❌ فشل: ' + e.message);
+  }
+}
+
+// ── JSONBin.io push / pull ──────────────────────────────────────
+async function cloudSyncJsonBin(direction) {
+  var apiKey = safeLS.getItem(JSONBIN_KEY_STORAGE);
+  var binId  = safeLS.getItem(JSONBIN_ID_STORAGE);
+  if (!apiKey) { toast('❌ مفتاح JSONBin غير موجود'); return; }
+
+  if (direction === 'push') {
+    showSyncBar('saving', '☁️ جاري الحفظ في السحابة...');
+    try {
+      var url = binId
+        ? 'https://api.jsonbin.io/v3/b/' + binId
+        : 'https://api.jsonbin.io/v3/b';
+      var method = binId ? 'PUT' : 'POST';
+      var headers = { 'Content-Type': 'application/json', 'X-Master-Key': apiKey };
+      if (!binId) { headers['X-Bin-Name'] = 'rayhana-cafe'; headers['X-Bin-Private'] = 'true'; }
+      var res = await fetch(url, { method: method, headers: headers, body: JSON.stringify(buildSyncPayload()) });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'فشل الرفع');
+      if (!binId && data.metadata && data.metadata.id) safeLS.setItem(JSONBIN_ID_STORAGE, data.metadata.id);
+      var t = new Date().toLocaleTimeString('ar');
+      safeLS.setItem('rh_last_sync', t);
+      showSyncBar('ok', '✅ محفوظ في السحابة ' + t);
+      updateSyncUI(); hideSyncBar(3000);
+    } catch(e) {
+      showSyncBar('err', '❌ فشل الحفظ: ' + e.message);
+      toast('❌ فشل الحفظ السحابي: ' + e.message);
+      hideSyncBar(4000);
+    }
+
+  } else if (direction === 'pull') {
+    showSyncBar('loading', '⬇️ جاري التحميل من السحابة...');
+    if (!binId) { showSyncBar('err', '⚠️ لا توجد بيانات — ارفع أولاً'); hideSyncBar(4000); return; }
+    try {
+      var res = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
+        headers: { 'X-Master-Key': apiKey }
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'فشل التحميل');
+      var sv = data.record;
+      if (!sv || sv._init) { showSyncBar('err', '⚠️ لا توجد بيانات في السحابة بعد — ارفع أولاً'); hideSyncBar(4000); return; }
+      applySyncPayload(sv);
+      var when = sv.savedAt ? new Date(sv.savedAt).toLocaleString('ar') : '—';
+      showSyncBar('ok', '✅ تم التحميل — آخر حفظ: ' + when);
+      hideSyncBar(4000);
+      toast('✅ تم تحميل البيانات من السحابة');
+      log('مزامنة JSONBin — تحميل — ' + when);
+    } catch(e) {
+      showSyncBar('err', '❌ فشل التحميل: ' + e.message);
+      toast('❌ فشل التحميل السحابي: ' + e.message);
+      hideSyncBar(4000);
+    }
+  }
+}
+
+function showSyncProvider(p) {
+  var jb = document.getElementById('syncJBView');
+  var gs = document.getElementById('syncGSView');
+  var tbJB = document.getElementById('tabJB');
+  var tbGS = document.getElementById('tabGS');
+  if (jb) jb.style.display = p === 'jsonbin' ? 'block' : 'none';
+  if (gs) gs.style.display = p === 'gsheets' ? 'block' : 'none';
+  if (tbJB) { tbJB.className = 'btn btn-sm ' + (p === 'jsonbin' ? 'btn-p' : 'btn-ghost'); }
+  if (tbGS) { tbGS.className = 'btn btn-sm ' + (p === 'gsheets' ? 'btn-p' : 'btn-ghost'); }
+}
 
 var APPS_SCRIPT_CODE = `// ريحانة كافيه — Google Apps Script Backend
 // انسخ هذا الكود في Apps Script وانشر كـ Web App
@@ -2595,8 +2761,11 @@ function connectCloud() {
 }
 
 function disconnectCloud() {
-  if (!confirm('قطع الاتصال بـ Google Sheets؟ ستبقى البيانات محلياً.')) return;
+  if (!confirm('قطع الاتصال السحابي؟ ستبقى البيانات محلياً.')) return;
   safeLS.removeItem(SYNC_URL_KEY);
+  safeLS.removeItem(SYNC_TYPE_KEY);
+  safeLS.removeItem(JSONBIN_KEY_STORAGE);
+  safeLS.removeItem(JSONBIN_ID_STORAGE);
   _autoSync = false;
   safeLS.removeItem(SYNC_AUTO_KEY);
   if (_syncTimer) { clearInterval(_syncTimer); _syncTimer = null; }
@@ -2619,36 +2788,26 @@ function toggleAutoSync() {
 }
 
 async function cloudSync(direction) {
+  if (safeLS.getItem(SYNC_TYPE_KEY) === 'jsonbin') return cloudSyncJsonBin(direction);
+
+  // ── Google Apps Script backend ──────────────────────────────
   var url = getSyncUrl();
   if (!url) { toast('❌ لم يتم إعداد المزامنة السحابية'); return; }
 
   if (direction === 'push') {
     showSyncBar('saving', '☁️ جاري الحفظ في السحابة...');
-    var payload = {
-      months: S.months,
-      suppliers: S.suppliers,
-      activeKey: S.activeKey,
-      lockedMonths: S.lockedMonths || [],
-      dailyEmps: S.dailyEmps,
-      monthlyEmps: S.monthlyEmps,
-      targets: S.targets || {},
-      inventory: S.inventory || [],
-      savedAt: new Date().toISOString(),
-      device: navigator.userAgent.substring(0,50)
-    };
     try {
       var res = await fetch(url, {
         method: 'POST',
         headers: {'Content-Type': 'text/plain'},
-        body: JSON.stringify({action:'push', payload:payload})
+        body: JSON.stringify({action:'push', payload: buildSyncPayload()})
       });
       var data = await res.json();
       if (data.ok) {
         var t = new Date().toLocaleTimeString('ar');
         safeLS.setItem('rh_last_sync', t);
         showSyncBar('ok', '✅ محفوظ في السحابة ' + t);
-        updateSyncUI();
-        hideSyncBar(3000);
+        updateSyncUI(); hideSyncBar(3000);
       } else {
         throw new Error(data.error || 'فشل الرفع إلى السحابة');
       }
@@ -2664,19 +2823,8 @@ async function cloudSync(direction) {
       var res = await fetch(url + '?t=' + Date.now(), {method:'GET'});
       var data = await res.json();
       if (data.ok && data.payload) {
-        var sv = data.payload;
-        if (sv.months) Object.keys(sv.months).forEach(function(k) { S.months[k] = sv.months[k]; });
-        if (sv.suppliers && sv.suppliers.length) S.suppliers = sv.suppliers;
-        if (sv.activeKey) S.activeKey = sv.activeKey;
-        if (sv.lockedMonths) S.lockedMonths = sv.lockedMonths;
-        if (sv.dailyEmps && sv.dailyEmps.length) S.dailyEmps = sv.dailyEmps;
-        if (sv.monthlyEmps && sv.monthlyEmps.length) S.monthlyEmps = sv.monthlyEmps;
-        if (sv.targets) S.targets = sv.targets;
-        if (sv.inventory) S.inventory = sv.inventory;
-        saveAll();
-        renderAll();
-        syncAttFromAllNotes();
-        var when = sv.savedAt ? new Date(sv.savedAt).toLocaleString('ar') : '—';
+        applySyncPayload(data.payload);
+        var when = data.payload.savedAt ? new Date(data.payload.savedAt).toLocaleString('ar') : '—';
         showSyncBar('ok', '✅ تم التحميل — آخر حفظ: ' + when);
         hideSyncBar(4000);
         toast('✅ تم تحميل البيانات من السحابة');
@@ -2715,19 +2863,23 @@ function hideSyncBar(ms) {
 }
 
 function updateSyncUI() {
-  var url = getSyncUrl();
-  var connView = document.getElementById('syncConnectedView');
+  var connected = isCloudConnected();
+  var syncType  = safeLS.getItem(SYNC_TYPE_KEY) || 'gsheets';
+  var connView  = document.getElementById('syncConnectedView');
   var setupView = document.getElementById('syncSetupView');
-  var dot = document.getElementById('syncStatusDot');
-  var lbl = document.getElementById('syncStatusLabel');
-  var autoBtn = document.getElementById('autoSyncBtn');
+  var dot       = document.getElementById('syncStatusDot');
+  var lbl       = document.getElementById('syncStatusLabel');
+  var autoBtn   = document.getElementById('autoSyncBtn');
   var lastSaved = document.getElementById('syncLastSaved');
+  var provLbl   = document.getElementById('syncProviderLabel');
 
-  if (url) {
+  if (connected) {
     if (connView) connView.style.display = 'block';
     if (setupView) setupView.style.display = 'none';
-    if (dot) { dot.style.background = '#34D399'; }
+    if (dot) dot.style.background = '#34D399';
     if (lbl) lbl.textContent = 'متصل ✅';
+    var provName = syncType === 'jsonbin' ? '☁️ JSONBin.io' : '📊 Google Sheets';
+    if (provLbl) provLbl.textContent = '✅ متصل بـ ' + provName;
     if (autoBtn) autoBtn.textContent = '🔄 مزامنة تلقائية: ' + (_autoSync ? 'تشغيل' : 'إيقاف');
     var ls = safeLS.getItem('rh_last_sync');
     if (lastSaved) lastSaved.textContent = ls ? 'آخر مزامنة: ' + ls : 'لم تتم المزامنة بعد';
@@ -2736,6 +2888,7 @@ function updateSyncUI() {
     if (setupView) setupView.style.display = 'block';
     if (dot) dot.style.background = 'var(--tx4)';
     if (lbl) lbl.textContent = 'غير مفعّلة';
+    showSyncProvider('jsonbin');
   }
 }
 
@@ -2743,7 +2896,7 @@ function updateSyncUI() {
 var _saOrigSync = saveAll;
 saveAll = function() {
   _saOrigSync();
-  if (_autoSync && getSyncUrl()) {
+  if (_autoSync && isCloudConnected()) {
     if (_syncTimer) clearTimeout(_syncTimer);
     _syncTimer = setTimeout(function() { cloudSync('push'); }, 2000); // debounce 2s
   }
@@ -2756,11 +2909,11 @@ login = function() {
   setTimeout(function() {
     updateSyncUI();
     _autoSync = safeLS.getItem(SYNC_AUTO_KEY) === '1';
-    if (_autoSync && getSyncUrl()) {
+    if (_autoSync && isCloudConnected()) {
       _syncTimer = setInterval(function() { cloudSync('push'); }, 5 * 60 * 1000);
     }
     // Auto-pull on login if connected
-    if (getSyncUrl()) {
+    if (isCloudConnected()) {
       setTimeout(function() { cloudSync('pull'); }, 1000);
     }
   }, 500);
