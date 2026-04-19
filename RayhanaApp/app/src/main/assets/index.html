@@ -696,10 +696,11 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
           </div>
         </div>
         <div class="card-body" style="padding:12px">
+          <!-- CONNECTED VIEW -->
           <div id="syncConnectedView" style="display:none">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
               <div>
-                <div style="font-size:12px;font-weight:700;color:var(--gn)">✅ متصل بـ Google Sheets</div>
+                <div style="font-size:12px;font-weight:700;color:var(--gn)" id="syncProviderLabel">✅ متصل</div>
                 <div style="font-size:10px;color:var(--tx3);margin-top:2px" id="syncLastSaved">—</div>
               </div>
               <div style="display:flex;gap:6px">
@@ -712,19 +713,55 @@ body.dark .who-ab{border-color:#FCD34D!important;color:#FCD34D!important}
               <button class="btn btn-r btn-sm" onclick="disconnectCloud()" style="font-size:11px">قطع الاتصال</button>
             </div>
           </div>
+
+          <!-- SETUP VIEW -->
           <div id="syncSetupView">
-            <div class="sync-setup-card">
-              <div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:10px">🔒 بياناتك محمية — تُحفظ في Google Sheet الخاص بك أنت فقط</div>
-              <div class="sync-step"><div class="sync-step-num">1</div><div>افتح <strong>Google Sheets</strong> وأنشئ جدولاً جديداً باسم "ريحانة كافيه"</div></div>
-              <div class="sync-step"><div class="sync-step-num">2</div><div>من القائمة: <strong>Extensions → Apps Script</strong></div></div>
-              <div class="sync-step"><div class="sync-step-num">3</div><div>احذف الكود الموجود والصق الكود الذي ستجده بالضغط على الزر أدناه</div></div>
-              <div class="sync-step"><div class="sync-step-num">4</div><div><strong>Deploy → New deployment → Web app</strong> → Execute as Me → Who has access: Anyone → Deploy</div></div>
-              <div class="sync-step"><div class="sync-step-num">5</div><div>انسخ رابط الـ Web App وألصقه هنا:</div></div>
-              <button class="btn btn-ghost btn-sm" onclick="copyAppsScript()" style="width:100%;margin-bottom:10px;font-size:11px">📋 نسخ كود Apps Script</button>
-              <div class="fg" style="margin:0">
-                <input type="url" class="fi" id="syncUrlInput" placeholder="https://script.google.com/macros/s/..." style="font-size:11px" dir="ltr">
+            <!-- Provider tabs -->
+            <div style="display:flex;gap:6px;margin-bottom:12px">
+              <button id="tabJB" class="btn btn-sm btn-p" onclick="showSyncProvider('jsonbin')">🔑 JSONBin.io — مُوصى</button>
+              <button id="tabGS" class="btn btn-sm btn-ghost" onclick="showSyncProvider('gsheets')">📊 Google Sheets</button>
+            </div>
+
+            <!-- JSONBin.io (default) -->
+            <div id="syncJBView">
+              <div class="sync-setup-card">
+                <div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:10px">🔒 بياناتك خاصة — تُحفظ في حسابك على JSONBin.io مجاناً</div>
+                <div class="sync-step">
+                  <div class="sync-step-num">1</div>
+                  <div>اذهب إلى <strong>jsonbin.io</strong> → أنشئ حساباً مجانياً (بريدك الإلكتروني فقط)</div>
+                </div>
+                <div class="sync-step">
+                  <div class="sync-step-num">2</div>
+                  <div>من لوحة التحكم: اضغط على <strong>API Keys</strong> → <strong>Master Key</strong> → انسخه والصقه هنا:</div>
+                </div>
+                <div class="fg" style="margin:8px 0 0">
+                  <input type="text" class="fi" id="jbKeyInput" placeholder="$2a$10$..." dir="ltr" autocomplete="off"
+                    style="font-size:12px;font-family:'IBM Plex Mono',monospace;letter-spacing:.5px">
+                </div>
+                <button class="btn btn-p" onclick="connectJsonBin()" style="width:100%;margin-top:8px;font-size:13px">
+                  🔗 ربط JSONBin.io — مجاناً
+                </button>
+                <div style="font-size:10px;color:var(--tx3);margin-top:8px;text-align:center">
+                  مجاني لأكثر من 10,000 عملية/شهر · بياناتك خاصة بك فقط
+                </div>
               </div>
-              <button class="btn btn-p" onclick="connectCloud()" style="width:100%;margin-top:8px;font-size:12px">🔗 ربط Google Sheets</button>
+            </div>
+
+            <!-- Google Sheets (hidden) -->
+            <div id="syncGSView" style="display:none">
+              <div class="sync-setup-card">
+                <div style="font-size:12px;font-weight:700;color:var(--tx);margin-bottom:10px">🔒 بياناتك تُحفظ في Google Sheet الخاص بك</div>
+                <div class="sync-step"><div class="sync-step-num">1</div><div>افتح <strong>Google Sheets</strong> وأنشئ جدولاً جديداً</div></div>
+                <div class="sync-step"><div class="sync-step-num">2</div><div>من القائمة: <strong>Extensions → Apps Script</strong></div></div>
+                <div class="sync-step"><div class="sync-step-num">3</div><div>احذف الكود الموجود والصق الكود بالضغط على الزر أدناه</div></div>
+                <div class="sync-step"><div class="sync-step-num">4</div><div><strong>Deploy → New deployment → Web app</strong> → Execute as Me → Anyone → Deploy</div></div>
+                <div class="sync-step"><div class="sync-step-num">5</div><div>انسخ رابط الـ Web App وألصقه هنا:</div></div>
+                <button class="btn btn-ghost btn-sm" onclick="copyAppsScript()" style="width:100%;margin-bottom:10px;font-size:11px">📋 نسخ كود Apps Script</button>
+                <div class="fg" style="margin:0">
+                  <input type="url" class="fi" id="syncUrlInput" placeholder="https://script.google.com/macros/s/..." style="font-size:11px" dir="ltr">
+                </div>
+                <button class="btn btn-p" onclick="connectCloud()" style="width:100%;margin-top:8px;font-size:12px">🔗 ربط Google Sheets</button>
+              </div>
             </div>
           </div>
         </div>
@@ -2501,8 +2538,137 @@ function importJSON(e){const file=e.target.files[0];if(!file)return;const reader
 // ════════════════════════════════════════════════════════════════
 var SYNC_URL_KEY = 'rh_sync_url';
 var SYNC_AUTO_KEY = 'rh_sync_auto';
+var SYNC_TYPE_KEY = 'rh_sync_type';   // 'gsheets' | 'jsonbin'
+var JSONBIN_KEY_STORAGE = 'rh_jb_key';
+var JSONBIN_ID_STORAGE  = 'rh_jb_id';
 var _syncTimer = null;
 var _autoSync = false;
+
+function isCloudConnected() {
+  var type = safeLS.getItem(SYNC_TYPE_KEY);
+  if (type === 'jsonbin') return !!safeLS.getItem(JSONBIN_KEY_STORAGE);
+  return !!safeLS.getItem(SYNC_URL_KEY);
+}
+
+function buildSyncPayload() {
+  return {
+    months: S.months, suppliers: S.suppliers, activeKey: S.activeKey,
+    lockedMonths: S.lockedMonths || [], dailyEmps: S.dailyEmps,
+    monthlyEmps: S.monthlyEmps, targets: S.targets || {},
+    inventory: S.inventory || [], savedAt: new Date().toISOString(),
+    device: navigator.userAgent.substring(0, 50)
+  };
+}
+
+function applySyncPayload(sv) {
+  if (sv.months) Object.keys(sv.months).forEach(function(k) { S.months[k] = sv.months[k]; });
+  if (sv.suppliers && sv.suppliers.length) S.suppliers = sv.suppliers;
+  if (sv.activeKey) S.activeKey = sv.activeKey;
+  if (sv.lockedMonths) S.lockedMonths = sv.lockedMonths;
+  if (sv.dailyEmps && sv.dailyEmps.length) S.dailyEmps = sv.dailyEmps;
+  if (sv.monthlyEmps && sv.monthlyEmps.length) S.monthlyEmps = sv.monthlyEmps;
+  if (sv.targets) S.targets = sv.targets;
+  if (sv.inventory) S.inventory = sv.inventory;
+  saveAll(); renderAll(); syncAttFromAllNotes();
+}
+
+// ── JSONBin.io connect ──────────────────────────────────────────
+async function connectJsonBin() {
+  var apiKey = (document.getElementById('jbKeyInput') || {}).value.trim();
+  if (!apiKey) { toast('❌ أدخل مفتاح API'); return; }
+  showSyncBar('loading', '🔗 جاري التحقق من المفتاح...');
+  try {
+    var res = await fetch('https://api.jsonbin.io/v3/b', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': apiKey,
+        'X-Bin-Name': 'rayhana-cafe',
+        'X-Bin-Private': 'true'
+      },
+      body: JSON.stringify({_init: true, savedAt: new Date().toISOString()})
+    });
+    var data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'مفتاح غير صحيح');
+    safeLS.setItem(JSONBIN_KEY_STORAGE, apiKey);
+    safeLS.setItem(SYNC_TYPE_KEY, 'jsonbin');
+    if (data.metadata && data.metadata.id) safeLS.setItem(JSONBIN_ID_STORAGE, data.metadata.id);
+    updateSyncUI();
+    showSyncBar('ok', '✅ تم الربط بـ JSONBin.io');
+    hideSyncBar(3000);
+    toast('✅ تم ربط JSONBin.io — جاري رفع البيانات...');
+    cloudSync('push');
+  } catch(e) {
+    showSyncBar('err', '❌ فشل الاتصال: ' + e.message);
+    hideSyncBar(4000);
+    toast('❌ فشل: ' + e.message);
+  }
+}
+
+// ── JSONBin.io push / pull ──────────────────────────────────────
+async function cloudSyncJsonBin(direction) {
+  var apiKey = safeLS.getItem(JSONBIN_KEY_STORAGE);
+  var binId  = safeLS.getItem(JSONBIN_ID_STORAGE);
+  if (!apiKey) { toast('❌ مفتاح JSONBin غير موجود'); return; }
+
+  if (direction === 'push') {
+    showSyncBar('saving', '☁️ جاري الحفظ في السحابة...');
+    try {
+      var url = binId
+        ? 'https://api.jsonbin.io/v3/b/' + binId
+        : 'https://api.jsonbin.io/v3/b';
+      var method = binId ? 'PUT' : 'POST';
+      var headers = { 'Content-Type': 'application/json', 'X-Master-Key': apiKey };
+      if (!binId) { headers['X-Bin-Name'] = 'rayhana-cafe'; headers['X-Bin-Private'] = 'true'; }
+      var res = await fetch(url, { method: method, headers: headers, body: JSON.stringify(buildSyncPayload()) });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'فشل الرفع');
+      if (!binId && data.metadata && data.metadata.id) safeLS.setItem(JSONBIN_ID_STORAGE, data.metadata.id);
+      var t = new Date().toLocaleTimeString('ar');
+      safeLS.setItem('rh_last_sync', t);
+      showSyncBar('ok', '✅ محفوظ في السحابة ' + t);
+      updateSyncUI(); hideSyncBar(3000);
+    } catch(e) {
+      showSyncBar('err', '❌ فشل الحفظ: ' + e.message);
+      toast('❌ فشل الحفظ السحابي: ' + e.message);
+      hideSyncBar(4000);
+    }
+
+  } else if (direction === 'pull') {
+    showSyncBar('loading', '⬇️ جاري التحميل من السحابة...');
+    if (!binId) { showSyncBar('err', '⚠️ لا توجد بيانات — ارفع أولاً'); hideSyncBar(4000); return; }
+    try {
+      var res = await fetch('https://api.jsonbin.io/v3/b/' + binId + '/latest', {
+        headers: { 'X-Master-Key': apiKey }
+      });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'فشل التحميل');
+      var sv = data.record;
+      if (!sv || sv._init) { showSyncBar('err', '⚠️ لا توجد بيانات في السحابة بعد — ارفع أولاً'); hideSyncBar(4000); return; }
+      applySyncPayload(sv);
+      var when = sv.savedAt ? new Date(sv.savedAt).toLocaleString('ar') : '—';
+      showSyncBar('ok', '✅ تم التحميل — آخر حفظ: ' + when);
+      hideSyncBar(4000);
+      toast('✅ تم تحميل البيانات من السحابة');
+      log('مزامنة JSONBin — تحميل — ' + when);
+    } catch(e) {
+      showSyncBar('err', '❌ فشل التحميل: ' + e.message);
+      toast('❌ فشل التحميل السحابي: ' + e.message);
+      hideSyncBar(4000);
+    }
+  }
+}
+
+function showSyncProvider(p) {
+  var jb = document.getElementById('syncJBView');
+  var gs = document.getElementById('syncGSView');
+  var tbJB = document.getElementById('tabJB');
+  var tbGS = document.getElementById('tabGS');
+  if (jb) jb.style.display = p === 'jsonbin' ? 'block' : 'none';
+  if (gs) gs.style.display = p === 'gsheets' ? 'block' : 'none';
+  if (tbJB) { tbJB.className = 'btn btn-sm ' + (p === 'jsonbin' ? 'btn-p' : 'btn-ghost'); }
+  if (tbGS) { tbGS.className = 'btn btn-sm ' + (p === 'gsheets' ? 'btn-p' : 'btn-ghost'); }
+}
 
 var APPS_SCRIPT_CODE = `// ريحانة كافيه — Google Apps Script Backend
 // انسخ هذا الكود في Apps Script وانشر كـ Web App
@@ -2595,8 +2761,11 @@ function connectCloud() {
 }
 
 function disconnectCloud() {
-  if (!confirm('قطع الاتصال بـ Google Sheets؟ ستبقى البيانات محلياً.')) return;
+  if (!confirm('قطع الاتصال السحابي؟ ستبقى البيانات محلياً.')) return;
   safeLS.removeItem(SYNC_URL_KEY);
+  safeLS.removeItem(SYNC_TYPE_KEY);
+  safeLS.removeItem(JSONBIN_KEY_STORAGE);
+  safeLS.removeItem(JSONBIN_ID_STORAGE);
   _autoSync = false;
   safeLS.removeItem(SYNC_AUTO_KEY);
   if (_syncTimer) { clearInterval(_syncTimer); _syncTimer = null; }
@@ -2619,36 +2788,26 @@ function toggleAutoSync() {
 }
 
 async function cloudSync(direction) {
+  if (safeLS.getItem(SYNC_TYPE_KEY) === 'jsonbin') return cloudSyncJsonBin(direction);
+
+  // ── Google Apps Script backend ──────────────────────────────
   var url = getSyncUrl();
   if (!url) { toast('❌ لم يتم إعداد المزامنة السحابية'); return; }
 
   if (direction === 'push') {
     showSyncBar('saving', '☁️ جاري الحفظ في السحابة...');
-    var payload = {
-      months: S.months,
-      suppliers: S.suppliers,
-      activeKey: S.activeKey,
-      lockedMonths: S.lockedMonths || [],
-      dailyEmps: S.dailyEmps,
-      monthlyEmps: S.monthlyEmps,
-      targets: S.targets || {},
-      inventory: S.inventory || [],
-      savedAt: new Date().toISOString(),
-      device: navigator.userAgent.substring(0,50)
-    };
     try {
       var res = await fetch(url, {
         method: 'POST',
         headers: {'Content-Type': 'text/plain'},
-        body: JSON.stringify({action:'push', payload:payload})
+        body: JSON.stringify({action:'push', payload: buildSyncPayload()})
       });
       var data = await res.json();
       if (data.ok) {
         var t = new Date().toLocaleTimeString('ar');
         safeLS.setItem('rh_last_sync', t);
         showSyncBar('ok', '✅ محفوظ في السحابة ' + t);
-        updateSyncUI();
-        hideSyncBar(3000);
+        updateSyncUI(); hideSyncBar(3000);
       } else {
         throw new Error(data.error || 'فشل الرفع إلى السحابة');
       }
@@ -2664,19 +2823,8 @@ async function cloudSync(direction) {
       var res = await fetch(url + '?t=' + Date.now(), {method:'GET'});
       var data = await res.json();
       if (data.ok && data.payload) {
-        var sv = data.payload;
-        if (sv.months) Object.keys(sv.months).forEach(function(k) { S.months[k] = sv.months[k]; });
-        if (sv.suppliers && sv.suppliers.length) S.suppliers = sv.suppliers;
-        if (sv.activeKey) S.activeKey = sv.activeKey;
-        if (sv.lockedMonths) S.lockedMonths = sv.lockedMonths;
-        if (sv.dailyEmps && sv.dailyEmps.length) S.dailyEmps = sv.dailyEmps;
-        if (sv.monthlyEmps && sv.monthlyEmps.length) S.monthlyEmps = sv.monthlyEmps;
-        if (sv.targets) S.targets = sv.targets;
-        if (sv.inventory) S.inventory = sv.inventory;
-        saveAll();
-        renderAll();
-        syncAttFromAllNotes();
-        var when = sv.savedAt ? new Date(sv.savedAt).toLocaleString('ar') : '—';
+        applySyncPayload(data.payload);
+        var when = data.payload.savedAt ? new Date(data.payload.savedAt).toLocaleString('ar') : '—';
         showSyncBar('ok', '✅ تم التحميل — آخر حفظ: ' + when);
         hideSyncBar(4000);
         toast('✅ تم تحميل البيانات من السحابة');
@@ -2715,19 +2863,23 @@ function hideSyncBar(ms) {
 }
 
 function updateSyncUI() {
-  var url = getSyncUrl();
-  var connView = document.getElementById('syncConnectedView');
+  var connected = isCloudConnected();
+  var syncType  = safeLS.getItem(SYNC_TYPE_KEY) || 'gsheets';
+  var connView  = document.getElementById('syncConnectedView');
   var setupView = document.getElementById('syncSetupView');
-  var dot = document.getElementById('syncStatusDot');
-  var lbl = document.getElementById('syncStatusLabel');
-  var autoBtn = document.getElementById('autoSyncBtn');
+  var dot       = document.getElementById('syncStatusDot');
+  var lbl       = document.getElementById('syncStatusLabel');
+  var autoBtn   = document.getElementById('autoSyncBtn');
   var lastSaved = document.getElementById('syncLastSaved');
+  var provLbl   = document.getElementById('syncProviderLabel');
 
-  if (url) {
+  if (connected) {
     if (connView) connView.style.display = 'block';
     if (setupView) setupView.style.display = 'none';
-    if (dot) { dot.style.background = '#34D399'; }
+    if (dot) dot.style.background = '#34D399';
     if (lbl) lbl.textContent = 'متصل ✅';
+    var provName = syncType === 'jsonbin' ? '☁️ JSONBin.io' : '📊 Google Sheets';
+    if (provLbl) provLbl.textContent = '✅ متصل بـ ' + provName;
     if (autoBtn) autoBtn.textContent = '🔄 مزامنة تلقائية: ' + (_autoSync ? 'تشغيل' : 'إيقاف');
     var ls = safeLS.getItem('rh_last_sync');
     if (lastSaved) lastSaved.textContent = ls ? 'آخر مزامنة: ' + ls : 'لم تتم المزامنة بعد';
@@ -2736,6 +2888,7 @@ function updateSyncUI() {
     if (setupView) setupView.style.display = 'block';
     if (dot) dot.style.background = 'var(--tx4)';
     if (lbl) lbl.textContent = 'غير مفعّلة';
+    showSyncProvider('jsonbin');
   }
 }
 
@@ -2743,7 +2896,7 @@ function updateSyncUI() {
 var _saOrigSync = saveAll;
 saveAll = function() {
   _saOrigSync();
-  if (_autoSync && getSyncUrl()) {
+  if (_autoSync && isCloudConnected()) {
     if (_syncTimer) clearTimeout(_syncTimer);
     _syncTimer = setTimeout(function() { cloudSync('push'); }, 2000); // debounce 2s
   }
@@ -2756,11 +2909,11 @@ login = function() {
   setTimeout(function() {
     updateSyncUI();
     _autoSync = safeLS.getItem(SYNC_AUTO_KEY) === '1';
-    if (_autoSync && getSyncUrl()) {
+    if (_autoSync && isCloudConnected()) {
       _syncTimer = setInterval(function() { cloudSync('push'); }, 5 * 60 * 1000);
     }
     // Auto-pull on login if connected
-    if (getSyncUrl()) {
+    if (isCloudConnected()) {
       setTimeout(function() { cloudSync('pull'); }, 1000);
     }
   }, 500);
